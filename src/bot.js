@@ -58,6 +58,7 @@ export const bot = (body, response, callback) => {
           callback(null, {
             reply: res.reply(),
             conversationToken: res.conversationToken,
+			replies: res.results.replies
           })
         } else {
           /*
