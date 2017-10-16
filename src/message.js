@@ -9,6 +9,7 @@ const recastai = require('recastai')
 const replyMessage = (message) => {
   // Instantiate Recast.AI SDK, just for request service
   const request = new recastai.request(process.env.REQUEST_TOKEN, process.env.LANGUAGE)
+
   // Get text from message received
   const text = message.content
 
@@ -26,7 +27,9 @@ const replyMessage = (message) => {
     * Ex: You can call any external API
     * Or: Update your mongo DB
     * etc...
-    */
+	*/
+	console.log(result);
+
     if (result.action) {
       console.log('The conversation action is: ', result.action.slug)
     }
