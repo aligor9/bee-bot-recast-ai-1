@@ -10,7 +10,7 @@
  *
  * The Recast.AI SDK will handle the message and call your reply bot function (ie. replyMessage function)
  */
-
+var httprequest = require('request');
 const recastai = require('recastai').default
 
 const replyMessage = require('./message')
@@ -51,15 +51,37 @@ export const bot = (body, response, callback) => {
     * It just sends it to Recast.AI and returns replies
     */
     client.request.converseText(body.text, { conversationToken: process.env.CONVERSATION_TOKEN || null })
+    client.request.converseText(body.text, { conversationToken: body.conversation_token || null })
       .then((res) => {
         if (res.reply()) {
           /*
            * If response received from Recast.AI contains a reply
            */
-          callback(null, {
-            reply: res.reply(),
-            conversationToken: res.conversationToken,
-          })
+
+          if (res.intents[0].slug == 'get-weather' && res.memory.lieu != null) {
+            var response = res;
+
+            var options = {
+              url: 'http://api.openweathermap.org/data/2.5/weather?lang=fr&units=metric&APPID=4fd4ee531089ff6d8e4af6c9fbed047e&q=' + String(response.memory.lieu.raw),
+              method: 'GET'
+            };
+            httprequest(options, function (err, res, bodie) {
+              var json = JSON.parse(bodie)
+
+              response.replies.push(String(json.weather[0].description)+" avec une temperature de "+String(json.main.temp)+"°C");
+              callback(null, {
+                replies: response.replies,
+                conversationToken: response.conversationToken,
+              })
+            });
+
+          } else {
+
+            callback(null, {
+              replies: res.replies,
+              conversationToken: res.conversationToken,
+            })
+          }
         } else {
           /*
            * If response received from Recast.AI does not contain any reply

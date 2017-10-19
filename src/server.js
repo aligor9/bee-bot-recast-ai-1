@@ -10,7 +10,7 @@
  * curl -X "POST" "http://localhost:5000" -d '{"text": "YOUR_TEXT"}' -H "Content-Type: application/json; charset=utf-8"
  * You might modify the server port ^^^^  depending on your configuration in config.js file
  */
-var httprequest = require("request");
+
 const express = require('express')
 const bodyParser = require('body-parser')
 
@@ -32,16 +32,7 @@ app.use((req, res, next) => {
 app.post('/', (request, response) => {
 	
   // Call the openweather API with a get request
-	/* var options =
-	{
-	url: "http://api.openweathermap.org/data/2.5/weather?q=London&APPID=4fd4ee531089ff6d8e4af6c9fbed047e",
-	method: "GET"
-	};
-
-	httprequest(options, function(err, res, body)
-	{
-	console.log(body);
-	}); */
+	
 	
   // Call bot main function
   bot(request.body, response, (error, success) => {
