@@ -59,11 +59,8 @@ export const bot = (body, response, callback) => {
           /*
            * If response received from Recast.AI contains a reply
            */
-
           if (res.intents[0].slug == 'get-weather' && res.memory.lieu != null) {
             var response = res;			
-
- 
 			https.get('https://api.openweathermap.org/data/2.5/weather?lang=fr&units=metric&APPID=4fd4ee531089ff6d8e4af6c9fbed047e&q=' + String(response.memory.lieu.raw), (resp) => {
 			  let data = '';
 			 
@@ -78,7 +75,7 @@ export const bot = (body, response, callback) => {
 				response.replies.push(String(json.weather[0].description)+" avec une temperature de "+String(json.main.temp)+"°C");
 				callback(null, {
                 replies: response.replies,
-                conversationToken: response.conversationToken,
+                conversation_token: response.conversationToken,
               })
 			  });
 			 
@@ -86,15 +83,14 @@ export const bot = (body, response, callback) => {
 			  console.log("Error: " + err.message);
 			  callback(null, {
                 replies: response.replies,
-                conversationToken: response.conversationToken,
+                conversation_token: response.conversationToken,
               })
 			});
-
+			
           } else {
-
             callback(null, {
               replies: res.replies,
-              conversationToken: res.conversationToken,
+              conversation_token: res.conversationToken,
             })
           }
         } else {
@@ -103,7 +99,7 @@ export const bot = (body, response, callback) => {
            */
           callback(null, {
             reply: 'No reply :(',
-            conversationToken: res.conversationToken,
+            conversation_token: res.conversationToken,
           })
         }
       })
