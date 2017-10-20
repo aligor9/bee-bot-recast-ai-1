@@ -10,8 +10,9 @@
  *
  * The Recast.AI SDK will handle the message and call your reply bot function (ie. replyMessage function)
  */
-var httprequest = require('request');
+//var httprequest = require('request');
 const recastai = require('recastai').default
+const https = require('https');
 
 const replyMessage = require('./message')
 
@@ -59,9 +60,37 @@ export const bot = (body, response, callback) => {
            */
 
           if (res.intents[0].slug == 'get-weather' && res.memory.lieu != null) {
-            var response = res;
+            var response = res;			
 
-            var options = {
+ 
+			https.get('https://api.openweathermap.org/data/2.5/weather?lang=fr&units=metric&APPID=4fd4ee531089ff6d8e4af6c9fbed047e&q=' + String(response.memory.lieu.raw), (resp) => {
+			  let data = '';
+			 
+			  // A chunk of data has been recieved.
+			  resp.on('data', (chunk) => {
+				data += chunk;
+			  });
+			 
+			  // The whole response has been received. Print out the result.
+			  resp.on('end', () => {
+				var json = JSON.parse(data);
+				response.replies.push(String(json.weather[0].description)+" avec une temperature de "+String(json.main.temp)+"°C");
+				callback(null, {
+                replies: response.replies,
+                conversationToken: response.conversationToken,
+              })
+			  });
+			 
+			}).on("error", (err) => {
+			  console.log("Error: " + err.message);
+			  callback(null, {
+                replies: response.replies,
+                conversationToken: response.conversationToken,
+              })
+			});
+						
+			
+           /* var options = {
               url: 'http://api.openweathermap.org/data/2.5/weather?lang=fr&units=metric&APPID=4fd4ee531089ff6d8e4af6c9fbed047e&q=' + String(response.memory.lieu.raw),
               method: 'GET'
             };
@@ -73,7 +102,7 @@ export const bot = (body, response, callback) => {
                 replies: response.replies,
                 conversationToken: response.conversationToken,
               })
-            });
+            });*/
 
           } else {
 
