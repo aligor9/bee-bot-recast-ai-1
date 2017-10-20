@@ -5,7 +5,7 @@
  * - received message from a connected channel will be transformed with Recast.AI SDK
  * - received message from test command will be processed by Recast.AI
  *   You can run this command for testing:
- *   curl -X "POST" "http://localhost:5000" -d '{"text": "YOUR_TEXT"}' -H "Content-Type: application/json; charset=utf-8"
+ *   curl -X 'POST' 'http://localhost:5000' -d '{'text': 'YOUR_TEXT'}' -H 'Content-Type: application/json; charset=utf-8'
  *
  *
  * The Recast.AI SDK will handle the message and call your reply bot function (ie. replyMessage function)
@@ -37,8 +37,9 @@ export const bot = (body, response, callback) => {
     * - Call the 'replyMessage' function, with this Message object in parameter
     *
     * If you want to edit the behaviour of your code bot, depending on user input,
-    * go to /src/message.js file and write your own code under "YOUR OWN CODE" comment.
+    * go to /src/message.js file and write your own code under 'YOUR OWN CODE' comment.
     */
+
     client.connect.handleMessage({ body }, response, replyMessage)
 
     /*
@@ -48,10 +49,10 @@ export const bot = (body, response, callback) => {
   } else if (body.text) {
     /*
     * If your request comes from the testing route
-    * ie curl -X "POST" "https://localhost:5000" -d '{"text": "YOUR_TEXT"}' -H "Content-Type: application/json; charset=utf-8"
+    * ie curl -X 'POST' 'https://localhost:5000' -d '{'text': 'YOUR_TEXT'}' -H 'Content-Type: application/json; charset=utf-8'
     * It just sends it to Recast.AI and returns replies
     */
-    client.request.converseText(body.text, { conversationToken: process.env.CONVERSATION_TOKEN || null })
+
     client.request.converseText(body.text, { conversationToken: body.conversation_token || null })
       .then((res) => {
         if (res.reply()) {
@@ -88,21 +89,6 @@ export const bot = (body, response, callback) => {
                 conversationToken: response.conversationToken,
               })
 			});
-						
-			
-           /* var options = {
-              url: 'http://api.openweathermap.org/data/2.5/weather?lang=fr&units=metric&APPID=4fd4ee531089ff6d8e4af6c9fbed047e&q=' + String(response.memory.lieu.raw),
-              method: 'GET'
-            };
-            httprequest(options, function (err, res, bodie) {
-              var json = JSON.parse(bodie)
-
-              response.replies.push(String(json.weather[0].description)+" avec une temperature de "+String(json.main.temp)+"°C");
-              callback(null, {
-                replies: response.replies,
-                conversationToken: response.conversationToken,
-              })
-            });*/
 
           } else {
 

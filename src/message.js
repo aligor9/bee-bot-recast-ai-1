@@ -28,7 +28,6 @@ const replyMessage = (message) => {
     * Or: Update your mongo DB
     * etc...
 	*/
-	console.log(result);
 
     if (result.action) {
       console.log('The conversation action is: ', result.action.slug)
